@@ -39,25 +39,23 @@ if action == "find":
         file_path = str(path)
     if file_path:
         metadata = parse(file_path, False)
-        liz = xbmcgui.ListItem(title, offscreen=True)
-        liz.setInfo("video",
-                    {
+        list_item = xbmcgui.ListItem(title, offscreen=True)
+        list_item.setInfo("video",
+                          {
                         "genre": metadata.credits.genre,
                         "year": metadata.year,
-                        # "episode": metadata.tv_data.episode,
-                        # "season": metadata.tv_data.season,
                         "rating": metadata.rating,
                         "title": metadata.title
 
                     })
-        xbmcplugin.addDirectoryItem(handle=plugin_handle, url=file_path, listitem=liz, isFolder=False)
+        xbmcplugin.addDirectoryItem(handle=plugin_handle, url=file_path, listitem=list_item, isFolder=False)
 elif action == "getdetails":
     url = params.get("url")
     xbmc.log("Url:" + url)
     metadata = parse(url, True)
-    liz = xbmcgui.ListItem(title, offscreen=True)
-    liz.setInfo("video",
-                {
+    list_item = xbmcgui.ListItem(title, offscreen=True)
+    list_item.setInfo("video",
+                      {
                     "genre": metadata.credits.genre,
                     "year": metadata.year,
                     "rating": metadata.rating,
@@ -70,8 +68,8 @@ elif action == "getdetails":
                     "tagline": metadata.tag_line,
                     "writer": metadata.credits.writer
                 })
-    liz.addAvailableArtwork(str(metadata.poster.path), "poster")
-    liz.setAvailableFanart([{"image": str(metadata.backdrop.path)}])
-    xbmcplugin.setResolvedUrl(handle=plugin_handle, succeeded=True, listitem=liz)
+    list_item.addAvailableArtwork(str(metadata.poster.path), "poster")
+    list_item.setAvailableFanart([{"image": str(metadata.backdrop.path)}])
+    xbmcplugin.setResolvedUrl(handle=plugin_handle, succeeded=True, listitem=list_item)
 
 xbmcplugin.endOfDirectory(plugin_handle)
