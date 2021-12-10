@@ -67,5 +67,8 @@ class Media:
         self.backdrop = Image()
         self.poster = Image()
 
+    def is_tv_show(self) -> bool:
+        return hasattr(self, "tv_data")
+
     def __repr__(self):
         return str(self.__dict__)

@@ -27,7 +27,6 @@ file_path = ""
 
 
 item = xbmcgui.ListItem(title, offscreen=True)
-print(item.getPath())
 
 if action == "find":
     folder_path = xbmc.getInfoLabel('Container.FolderPath')
@@ -37,6 +36,7 @@ if action == "find":
         root_directory = find_source_path(title)
     for path in Path(root_directory).rglob(title + "*" + ".vsmeta"):
         file_path = str(path)
+        break
     if file_path:
         metadata = parse(file_path, False)
         list_item = xbmcgui.ListItem(title, offscreen=True)
@@ -51,25 +51,29 @@ if action == "find":
         xbmcplugin.addDirectoryItem(handle=plugin_handle, url=file_path, listitem=list_item, isFolder=False)
 elif action == "getdetails":
     url = params.get("url")
-    xbmc.log("Url:" + url)
+
     metadata = parse(url, True)
+
     list_item = xbmcgui.ListItem(title, offscreen=True)
-    list_item.setInfo("video",
-                      {
-                    "genre": metadata.credits.genre,
-                    "year": metadata.year,
-                    "rating": metadata.rating,
-                    "cast": metadata.credits.cast,
-                    "director": metadata.credits.director,
-                    "mpaa": metadata.classification,
-                    "plot": metadata.summary,
-                    "plotoutline": metadata.summary,
-                    "title": metadata.title,
-                    "tagline": metadata.tag_line,
-                    "writer": metadata.credits.writer
-                })
-    list_item.addAvailableArtwork(str(metadata.poster.path), "poster")
-    list_item.setAvailableFanart([{"image": str(metadata.backdrop.path)}])
+    list_item.setInfo("video", {
+        "genre": metadata.credits.genre,
+        "year": metadata.year,
+        "rating": metadata.rating,
+        "cast": metadata.credits.cast,
+        "director": metadata.credits.director,
+        "mpaa": metadata.classification,
+        "plot": metadata.summary,
+        "plotoutline": metadata.summary,
+        "title": metadata.title,
+        "tagline": metadata.tag_line,
+        "writer": metadata.credits.writer
+    })
+
+    if metadata.poster.path:
+        list_item.addAvailableArtwork(str(metadata.poster.path), "poster")
+    if metadata.backdrop.path:
+        list_item.setAvailableFanart([{"image": str(metadata.backdrop.path)}])
+
     xbmcplugin.setResolvedUrl(handle=plugin_handle, succeeded=True, listitem=list_item)
 
 xbmcplugin.endOfDirectory(plugin_handle)

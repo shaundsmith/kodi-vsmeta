@@ -19,39 +19,30 @@ def parse(file_path: str, extract_images: bool) -> Media:
     media = Media.Media()
 
     def add_title():
-        print("Parsing title")
         media.title = data_stream.read_string()
 
     def add_title_2():
-        print("Parsing title 2")
         media.title_2 = data_stream.read_string()
 
     def add_tag_line():
-        print("Tag Line")
         media.tag_line = data_stream.read_string()
 
     def add_year():
-        print("Parsing year")
         media.year = data_stream.read_integer()
 
     def add_release_date():
-        print("Parsing release date")
         media.release_date = data_stream.read_date()
 
     def add_locked():
-        print("Parsing locked")
         media.locked = data_stream.read_integer() != 0
 
     def add_summary():
-        print("Parsing summary")
         media.summary = data_stream.read_string()
 
     def add_metadata():
-        print("Parsing metadata")
         media.metadata = data_stream.read_string()
 
     def add_credits_or_backdrop():
-        print("Parsing credits/backdrop")
         group = data_stream.read_bytes()
         if hasattr(media, "credits"):
             media.backdrop = backdrop_parser.parse(DataStream(group))
@@ -59,28 +50,22 @@ def parse(file_path: str, extract_images: bool) -> Media:
             media.credits = credit_parser.parse(DataStream(group))
 
     def add_backdrop():
-        print("Parsing backdrop")
         group = data_stream.read_bytes()
         media.backdrop = backdrop_parser.parse(DataStream(group))
 
     def add_classification():
-        print("Parsing classification")
         media.classification = data_stream.read_string()
 
     def add_rating():
-        print("Parsing rating")
         media.rating = data_stream.read_integer() / 10
 
     def add_poster_data():
-        print("Parsing poster data")
         media.poster.data = data_stream.read_image()
 
     def add_poster_md5():
-        print("Parsing poster md5")
         media.poster.md5 = data_stream.read_string()
 
     def add_tv_data():
-        print("Parsing tv data")
         group = data_stream.read_bytes()
         media.tv_data = tv_data_parser.parse(DataStream(group))
 

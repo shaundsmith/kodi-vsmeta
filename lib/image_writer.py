@@ -27,9 +27,17 @@ def write_images(file_path: str, media: Media):
 
         return image_path
 
-    if hasattr(media.poster, "data") and len(media.poster.data) > 0:
-        path = write_image(get_file_name() + "-poster.jpg", media.poster.data)
-        media.poster.path = path
-    if hasattr(media.backdrop, "data") and len(media.backdrop.data) > 0:
-        path = write_image(get_file_name() + "-backdrop.jpg", media.backdrop.data)
-        media.backdrop.path = path
+    if media.is_tv_show():
+        if hasattr(media.tv_data.poster, "data") and len(media.tv_data.poster.data) > 0:
+            path = write_image(media.title + "-poster.jpg", media.tv_data.poster.data)
+            media.tv_data.poster.path = path
+        if hasattr(media.tv_data.backdrop, "data") and len(media.tv_data.backdrop.data) > 0:
+            path = write_image(media.title + "-backdrop.jpg", media.tv_data.backdrop.data)
+            media.tv_data.backdrop.path = path
+    else:
+        if hasattr(media.poster, "data") and len(media.poster.data) > 0:
+            path = write_image(get_file_name() + "-poster.jpg", media.poster.data)
+            media.poster.path = path
+        if hasattr(media.backdrop, "data") and len(media.backdrop.data) > 0:
+            path = write_image(get_file_name() + "-backdrop.jpg", media.backdrop.data)
+            media.backdrop.path = path

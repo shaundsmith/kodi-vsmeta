@@ -8,10 +8,13 @@
         <import addon="xbmc.metadata" version="2.1.0"/>
     </requires>
     <extension point="xbmc.metadata.scraper.movies"
-               library="addon.py"/>
+               library="addon_movie.py"/>
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">Synology Videostation VSMeta file scraper</summary>
-        <description lang="en_GB">Demo movies python scraper.</description>
+        <description lang="en_GB">
+            Python scraper for Synology Videostation VSMeta files.
+            Provides movie information based on the Synology Videostation VSMeta files co-located with the movie files.
+        </description>
         <platform>all</platform>
         <license>MIT</license>
     </extension>
