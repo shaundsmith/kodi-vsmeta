@@ -102,7 +102,7 @@ elif action == "getepisodedetails":
     url = params.get("url")
     metadata_path = url + ".vsmeta"
     if metadata_path:
-        metadata = parse(str(metadata_path), False)
+        metadata = parse(str(metadata_path), True)
         episode_path = str(os.path.splitext(metadata_path)[0])
         list_item = xbmcgui.ListItem(episode_path, offscreen=True)
         video = {
@@ -121,9 +121,10 @@ elif action == "getepisodedetails":
             "writer": metadata.credits.writer
         }
         list_item.setInfo("video", video)
+        list_item.addAvailableArtwork(metadata.poster.path, 'thumb')
         xbmcplugin.setResolvedUrl(plugin_handle, True, list_item)
     else:
-        xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem(offscreen=True))
+        xbmcplugin.setResolvedUrl(plugin_handle, False, xbmcgui.ListItem(offscreen=True))
 
 
 xbmcplugin.endOfDirectory(plugin_handle)
