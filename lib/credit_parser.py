@@ -20,9 +20,9 @@ def parse(data_stream: DataStream) -> Media.Credits:
         media_credits.writer.append(writer)
 
     fields = {
-        0x0A: add_cast,
+        0x0a: add_cast,
         0x12: add_director,
-        0x1A: add_genre,
+        0x1a: add_genre,
         0x22: add_writer
     }
 

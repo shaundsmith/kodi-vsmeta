@@ -45,9 +45,9 @@ def parse(data_stream: DataStream) -> Media.TvData:
         0x22: add_release_date,
         0x28: add_locked,
         0x32: add_summary,
-        0x3A: add_poster_data,
+        0x3a: add_poster_data,
         0x42: add_poster_md5,
-        0x4A: add_metadata,
+        0x4a: add_metadata,
         0x52: add_backdrop
     }
 

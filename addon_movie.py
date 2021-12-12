@@ -7,6 +7,7 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
+from VideoInfoBuilder import VideoInfoBuilder, MetaDataField
 from find_source_path import find_source_path
 from lib.vsmeta_parser import parse
 
@@ -25,7 +26,6 @@ action = params.get('action')
 title = params.get("title")
 file_path = ""
 
-
 item = xbmcgui.ListItem(title, offscreen=True)
 
 if action == "find":
@@ -34,40 +34,36 @@ if action == "find":
         root_directory = folder_path
     else:
         root_directory = find_source_path(title)
-    for path in Path(root_directory).rglob(title + "*" + ".vsmeta"):
-        file_path = str(path)
-        break
+    file_path = next(Path(root_directory).rglob(title + ".*" + ".vsmeta"), None)
     if file_path:
-        metadata = parse(file_path, False)
+        metadata = parse(str(file_path), False)
         list_item = xbmcgui.ListItem(title, offscreen=True)
-        list_item.setInfo("video",
-                          {
-                        "genre": metadata.credits.genre,
-                        "year": metadata.year,
-                        "rating": metadata.rating,
-                        "title": metadata.title
-
-                    })
-        xbmcplugin.addDirectoryItem(handle=plugin_handle, url=file_path, listitem=list_item, isFolder=False)
+        list_item.setInfo("video", VideoInfoBuilder()
+                          .with_field("genre", MetaDataField(metadata, "credits.genre"))
+                          .with_field("year", MetaDataField(metadata, "year"))
+                          .with_field("rating", MetaDataField(metadata, "rating"))
+                          .with_field("title", MetaDataField(metadata, "title"))
+                          .build())
+        xbmcplugin.addDirectoryItem(handle=plugin_handle, url=str(file_path), listitem=list_item, isFolder=False)
 elif action == "getdetails":
     url = params.get("url")
 
     metadata = parse(url, True)
 
     list_item = xbmcgui.ListItem(title, offscreen=True)
-    list_item.setInfo("video", {
-        "genre": metadata.credits.genre,
-        "year": metadata.year,
-        "rating": metadata.rating,
-        "cast": metadata.credits.cast,
-        "director": metadata.credits.director,
-        "mpaa": metadata.classification,
-        "plot": metadata.summary,
-        "plotoutline": metadata.summary,
-        "title": metadata.title,
-        "tagline": metadata.tag_line,
-        "writer": metadata.credits.writer
-    })
+    list_item.setInfo("video", VideoInfoBuilder()
+                      .with_field("genre", MetaDataField(metadata, "credits.genre"))
+                      .with_field("year", MetaDataField(metadata, "year"))
+                      .with_field("rating", MetaDataField(metadata, "rating"))
+                      .with_field("cast", MetaDataField(metadata, "credits.cast"))
+                      .with_field("director", MetaDataField(metadata, "credits.director"))
+                      .with_field("mpaa", MetaDataField(metadata, "classification"))
+                      .with_field("plot", MetaDataField(metadata, "summary"))
+                      .with_field("plotoutline", MetaDataField(metadata, "summary"))
+                      .with_field("title", MetaDataField(metadata, "title"))
+                      .with_field("tagline", MetaDataField(metadata, "tag_line"))
+                      .with_field("writer", MetaDataField(metadata, "credits.writer"))
+                      .build())
 
     if metadata.poster.path:
         list_item.addAvailableArtwork(str(metadata.poster.path), "poster")
