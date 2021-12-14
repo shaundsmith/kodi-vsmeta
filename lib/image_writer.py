@@ -7,14 +7,15 @@ BACKDROP_SUFFIX = "-backdrop.jpg"
 
 
 # Writes all images parsed as byte arrays to the filesystem.
-# The images are written to the directory .media-art adjacent to the given file.
+# The images are written to the given directory.
 #   file_path: The path to the vsmeta file
 #   media: The parsed media information from the vsmeta file
-def write_images(file_path: str, media: Media):
+#   image_directory: The directory to write the images to
+def write_images(file_path: str, media: Media, image_directory: str):
     file_name = os.path.basename(file_path)
     directory = os.path.dirname(file_path)
 
-    image_directory = os.path.join(directory, ".media-art")
+    image_directory = os.path.join(directory, image_directory)
     if not os.path.exists(image_directory):
         os.mkdir(image_directory)
 

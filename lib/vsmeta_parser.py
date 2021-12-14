@@ -1,6 +1,8 @@
 from lib import Media, image_writer, backdrop_parser, credit_parser, tv_data_parser
 from lib.DataStream import DataStream, DataStreamFactory
 
+DEFAULT_IMAGE_DIRECTORY = ".media-art"
+
 
 # Parses a Synology Videostation vsmeta file into a Python data structure.
 #   file_path: The path to the vsmeta file
@@ -93,6 +95,6 @@ def parse(file_path: str, extract_images: bool) -> Media:
             fields[field_type]()
 
     if extract_images:
-        image_writer.write_images(file_path, media)
+        image_writer.write_images(file_path, media, DEFAULT_IMAGE_DIRECTORY)
 
     return media

@@ -7,9 +7,10 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
+import get_set_information
 from VideoInfoBuilder import VideoInfoBuilder, MetaDataField
 from find_source_path import find_source_path
-from lib.vsmeta_parser import parse
+from lib.vsmeta_parser import parse, DEFAULT_IMAGE_DIRECTORY
 
 
 def get_params():
@@ -49,6 +50,7 @@ elif action == "getdetails":
     url = params.get("url")
 
     metadata = parse(url, True)
+    set_information = get_set_information.get(url, DEFAULT_IMAGE_DIRECTORY)
 
     list_item = xbmcgui.ListItem(title, offscreen=True)
     list_item.setInfo("video", VideoInfoBuilder()
@@ -63,12 +65,18 @@ elif action == "getdetails":
                       .with_field("title", MetaDataField(metadata, "title"))
                       .with_field("tagline", MetaDataField(metadata, "tag_line"))
                       .with_field("writer", MetaDataField(metadata, "credits.writer"))
+                      .with_field("set", MetaDataField(set_information, "title"))
+                      .with_field("setoverview", MetaDataField(set_information, "summary"))
                       .build())
 
     if metadata.poster.path:
         list_item.addAvailableArtwork(str(metadata.poster.path), "poster")
     if metadata.backdrop.path:
         list_item.setAvailableFanart([{"image": str(metadata.backdrop.path)}])
+    if hasattr(set_information, "fanart"):
+        list_item.addAvailableArtwork(set_information.fanart, "set.fanart")
+    if hasattr(set_information, "poster"):
+        list_item.addAvailableArtwork(set_information.poster, "set.poster")
 
     xbmcplugin.setResolvedUrl(handle=plugin_handle, succeeded=True, listitem=list_item)
 
