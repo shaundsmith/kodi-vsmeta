@@ -23,8 +23,12 @@ def write_images(file_path: str, media: Media, image_directory: str):
         media_file_name = file_name.replace(".vsmeta", "")
         return os.path.splitext(media_file_name)[0]
 
+    def make_safe_file_name(raw_file_name):
+        safe_characters = (' ', '.', '-', '_', '&')
+        return "".join([char for char in raw_file_name if char.isalnum() or char in safe_characters]).rstrip()
+
     def write_image(image_name, image_data):
-        image_path = os.path.join(image_directory, image_name)
+        image_path = os.path.join(image_directory, make_safe_file_name(image_name))
         image_file = open(image_path, "wb")
         image_file.write(image_data)
         image_file.close()
