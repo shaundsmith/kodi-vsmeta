@@ -12,6 +12,9 @@ class Image:
     md5: str
     timestamp: datetime
 
+    def __init__(self):
+        self.path = ""
+
     def __repr__(self):
         return str(self.__dict__)
 
