@@ -67,6 +67,7 @@ elif action == "getdetails":
                       .with_field("writer", MetaDataField(metadata, "credits.writer"))
                       .with_field("set", MetaDataField(set_information, "title"))
                       .with_field("setoverview", MetaDataField(set_information, "summary"))
+                      .with_field("sorttitle", MetaDataField(set_information, "sort_title"))
                       .build())
 
     if metadata.poster.path:
