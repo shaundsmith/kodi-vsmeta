@@ -43,7 +43,9 @@ def get_details(title, metadata, file_path):
                       .with_field_value("episodeguide", tv_show_directory)
                       .with_field("year", MetaDataField(metadata, "tv_data.year"))
                       .with_field("premiered", MetaDataField(metadata, "tv_data.release_date"))
-                      .with_field("credits", MetaDataField(metadata, "credits.cast"))
+                      .with_field("cast", MetaDataField(metadata, "credits.cast"))
+                      .with_field("director", MetaDataField(metadata, "credits.director"))
+                      .with_field("mpaa", MetaDataField(metadata, "classification"))
                       .with_field("genre", MetaDataField(metadata, "credits.genre"))
                       .build())
     if hasattr(metadata, "tv_data") and metadata.tv_data.poster.path:
@@ -94,6 +96,7 @@ def get_episode_details(url):
                       .with_field("director", MetaDataField(metadata, "credits.director"))
                       .with_field("mpaa", MetaDataField(metadata, "classification"))
                       .with_field("writer", MetaDataField(metadata, "credits.writer"))
+                      .with_field("genre", MetaDataField(metadata, "credits.genre"))
                       .build())
     if metadata.poster.path:
         list_item.addAvailableArtwork(metadata.poster.path, 'thumb')
