@@ -64,7 +64,6 @@ def get_episode_list(title, url):
         list_item = xbmcgui.ListItem(episode_path, offscreen=True)
         list_item.setInfo("video", VideoInfoBuilder()
                           .with_field("title", MetaDataField(metadata, "tag_line"))
-                          .with_field("title", MetaDataField(metadata, "tag_line"))
                           .with_field("season", MetaDataField(metadata, "tv_data.season"))
                           .with_field("episode", MetaDataField(metadata, "tv_data.episode"))
                           .with_field_value("mediatype", MediaType.TV_EPISODE)
