@@ -8,20 +8,12 @@ import xbmcgui
 import xbmcplugin
 
 import get_set_information
+import param_reader
 from VideoInfoBuilder import VideoInfoBuilder, MetaDataField
 from find_source_path import find_source_path
 from lib.vsmeta_parser import parse, DEFAULT_IMAGE_DIRECTORY
 
-
-def get_params():
-    param_string = sys.argv[2][1:]
-    if param_string:
-        return dict(urllib.parse.parse_qsl(param_string))
-    return {}
-
-
-xbmc.log(str(sys.argv))
-params = get_params()
+params = param_reader.read()
 plugin_handle = int(sys.argv[1])
 action = params.get('action')
 title = params.get("title")
