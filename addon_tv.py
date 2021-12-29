@@ -7,6 +7,7 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
+from VideoInfoBuilder import VideoInfoBuilder, MetaDataField
 from find_source_path import find_source_path
 from lib.vsmeta_parser import parse
 
@@ -27,7 +28,6 @@ file_path = ""
 
 item = xbmcgui.ListItem(title, offscreen=True)
 
-xbmc.log("Action: " + action)
 if action == "find":
     folder_path = xbmc.getInfoLabel('Container.FolderPath')
     if os.path.exists(folder_path):
@@ -37,21 +37,21 @@ if action == "find":
 
     file_path = next(Path(root_directory).rglob(title + "*" + ".vsmeta"), None)
     if file_path:
+        xbmc.log("Found + " + str(file_path))
         metadata = parse(str(file_path), False)
         tv_show_directory = os.path.dirname(file_path)
         list_item = xbmcgui.ListItem(title, offscreen=True)
-        list_item.setInfo("video",
-                          {
-                              "plot": metadata.tv_data.summary,
-                              "plotoutline": metadata.tv_data.summary,
-                              "title": metadata.title,
-                              "originaltitle": metadata.title,
-                              "tvshowtitle": metadata.title,
-                              "mediatype": "tvshow",
-                              "episodeguide": tv_show_directory,
-                              "year": metadata.tv_data.year,
-                              "premiered": str(metadata.tv_data.release_date)
-                          })
+        list_item.setInfo("video", VideoInfoBuilder()
+                          .with_field("plot", MetaDataField(metadata, "tv_data.summary"))
+                          .with_field("plotoutline", MetaDataField(metadata, "tv_data.summary"))
+                          .with_field("title", MetaDataField(metadata, "title"))
+                          .with_field("originaltitle", MetaDataField(metadata, "title"))
+                          .with_field("tvshowtitle", MetaDataField(metadata, "title"))
+                          .with_field_value("mediatype", "tvshow")
+                          .with_field_value("episodeguide", str(tv_show_directory))
+                          .with_field("year", MetaDataField(metadata, "tv_data.year"))
+                          .with_field("premiered", MetaDataField(metadata, "tv_data.release_date"))
+                          .build())
         xbmcplugin.addDirectoryItem(handle=plugin_handle, url=tv_show_directory, listitem=list_item, isFolder=False)
 elif action == "getdetails":
     url = params.get("url")
@@ -59,25 +59,25 @@ elif action == "getdetails":
     tv_show_directory = os.path.dirname(file_path)
     metadata = parse(str(file_path), True)
     list_item = xbmcgui.ListItem(title, offscreen=True)
-    list_item.setInfo("video",
-                      {
-                          "plot": metadata.tv_data.summary,
-                          "plotoutline": metadata.tv_data.summary,
-                          "title": metadata.title,
-                          "originaltitle": metadata.title,
-                          "tvshowtitle": metadata.title,
-                          "mediatype": "tvshow",
-                          "episodeguide": tv_show_directory,
-                          "year": metadata.tv_data.year,
-                          "premiered": str(metadata.tv_data.release_date),
-                          "credits": metadata.credits.cast
-                      })
-    list_item.addAvailableArtwork(str(metadata.tv_data.poster.path), "poster")
-    list_item.setAvailableFanart([{"image": str(metadata.tv_data.backdrop.path)}])
+    list_item.setInfo("video", VideoInfoBuilder()
+                      .with_field("plot", MetaDataField(metadata, "tv_data.summary"))
+                      .with_field("plotoutline", MetaDataField(metadata, "tv_data.summary"))
+                      .with_field("title", MetaDataField(metadata, "title"))
+                      .with_field("originaltitle", MetaDataField(metadata, "title"))
+                      .with_field("tvshowtitle", MetaDataField(metadata, "title"))
+                      .with_field_value("mediatype", "tvshow")
+                      .with_field_value("episodeguide", str(tv_show_directory))
+                      .with_field("year", MetaDataField(metadata, "tv_data.year"))
+                      .with_field("premiered", MetaDataField(metadata, "tv_data.release_date"))
+                      .with_field("credits", MetaDataField(metadata, "credits.cast"))
+                      .build())
+    if hasattr(metadata, "tv_data") and metadata.tv_data.poster.path:
+        list_item.addAvailableArtwork(str(metadata.tv_data.poster.path), "poster")
+    if hasattr(metadata, "tv_data") and metadata.tv_data.backdrop.path:
+        list_item.setAvailableFanart([{"image": str(metadata.tv_data.backdrop.path)}])
     xbmcplugin.setResolvedUrl(handle=plugin_handle, succeeded=True, listitem=list_item)
 
 elif action == "getepisodelist":
-    # Scan directory
     url = params.get("url")
     paths = Path(url).rglob("*.vsmeta")
     for path in paths:
@@ -85,15 +85,13 @@ elif action == "getepisodelist":
         metadata = parse(str(path), False)
         episode_path = str(os.path.splitext(path)[0])
         list_item = xbmcgui.ListItem(episode_path, offscreen=True)
-        video = {
-            "title": metadata.tag_line,
-            "season": metadata.tv_data.season,
-            "episode": metadata.tv_data.episode,
-            "mediatype": "episode",
-            "aired": str(metadata.release_date),
-        }
-        xbmc.log("Found " + str(video) + " for " + str(episode_path))
-        list_item.setInfo("video", video)
+        list_item.setInfo("video", VideoInfoBuilder()
+                          .with_field("title", MetaDataField(metadata, "tag_line"))
+                          .with_field("season", MetaDataField(metadata, "tv_data.season"))
+                          .with_field("episode", MetaDataField(metadata, "tv_data.episode"))
+                          .with_field_value("mediatype", "episode")
+                          .with_field("aired", MetaDataField(metadata, "release_date"))
+                          .build())
         xbmcplugin.addDirectoryItem(plugin_handle,
                                     url=episode_path,
                                     listitem=list_item,
@@ -105,26 +103,25 @@ elif action == "getepisodedetails":
         metadata = parse(str(metadata_path), True)
         episode_path = str(os.path.splitext(metadata_path)[0])
         list_item = xbmcgui.ListItem(episode_path, offscreen=True)
-        video = {
-            "title": metadata.tag_line,
-            "season": metadata.tv_data.season,
-            "episode": metadata.tv_data.episode,
-            "mediatype": "episode",
-            "aired": str(metadata.release_date),
-            "premiered": str(metadata.release_date),
-            "plot": metadata.summary,
-            "plotoutline": metadata.summary,
-            "rating": metadata.rating,
-            "cast": metadata.credits.cast,
-            "director": metadata.credits.director,
-            "mpaa": metadata.classification,
-            "writer": metadata.credits.writer
-        }
-        list_item.setInfo("video", video)
-        list_item.addAvailableArtwork(metadata.poster.path, 'thumb')
+        list_item.setInfo("video", VideoInfoBuilder()
+                          .with_field("title", MetaDataField(metadata, "tag_line"))
+                          .with_field("season", MetaDataField(metadata, "tv_data.season"))
+                          .with_field("episode", MetaDataField(metadata, "tv_data.episode"))
+                          .with_field_value("mediatype", "episode")
+                          .with_field("aired", MetaDataField(metadata, "release_date"))
+                          .with_field("premiered", MetaDataField(metadata, "release_date"))
+                          .with_field("plot", MetaDataField(metadata, "summary"))
+                          .with_field("plotoutline", MetaDataField(metadata, "summary"))
+                          .with_field("rating", MetaDataField(metadata, "rating"))
+                          .with_field("cast", MetaDataField(metadata, "credits.cast"))
+                          .with_field("director", MetaDataField(metadata, "credits.director"))
+                          .with_field("mpaa", MetaDataField(metadata, "classification"))
+                          .with_field("writer", MetaDataField(metadata, "credits.writer"))
+                          .build())
+        if metadata.poster.path:
+            list_item.addAvailableArtwork(metadata.poster.path, 'thumb')
         xbmcplugin.setResolvedUrl(plugin_handle, True, list_item)
     else:
         xbmcplugin.setResolvedUrl(plugin_handle, False, xbmcgui.ListItem(offscreen=True))
-
 
 xbmcplugin.endOfDirectory(plugin_handle)

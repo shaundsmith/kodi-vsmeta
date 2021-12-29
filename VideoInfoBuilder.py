@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 
 from lib.Media import Media
@@ -23,7 +24,7 @@ class MetaDataField:
         return self.field_value is not None
 
     def get_value(self):
-        return self.field_value
+        return str(self.field_value) if isinstance(self.field_value, datetime) else self.field_value
 
 
 class VideoInfoBuilder:
@@ -35,6 +36,10 @@ class VideoInfoBuilder:
     def with_field(self, field_name, metadata_field):
         if metadata_field.has_value():
             self.video_info[field_name] = metadata_field.get_value()
+        return self
+
+    def with_field_value(self, field_name, field_value):
+        self.video_info[field_name] = field_value
         return self
 
     def build(self):
