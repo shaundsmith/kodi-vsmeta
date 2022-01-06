@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 
 import xbmc
@@ -8,9 +9,19 @@ import MediaType
 from VideoInfoBuilder import VideoInfoBuilder, MetaDataField
 from lib import vsmeta_parser
 
+SEASON_DIRECTORY_PATTERN = re.compile("^Season \\d+.*")
+
+
+def get_tv_show_directory(file_path):
+    tv_show_directory = os.path.dirname(file_path)
+
+    if SEASON_DIRECTORY_PATTERN.match(os.path.basename(tv_show_directory)):
+        tv_show_directory = os.path.dirname(tv_show_directory)
+    return tv_show_directory
+
 
 def find(title, metadata, file_path):
-    tv_show_directory = str(os.path.dirname(file_path))
+    tv_show_directory = str(get_tv_show_directory(file_path))
     list_item = xbmcgui.ListItem(title, offscreen=True)
     list_item.setInfo("video", VideoInfoBuilder()
                       .with_field("plot", MetaDataField(metadata, "tv_data.summary"))
@@ -31,7 +42,7 @@ def find(title, metadata, file_path):
 
 
 def get_details(title, metadata, file_path):
-    tv_show_directory = str(os.path.dirname(file_path))
+    tv_show_directory = str(get_tv_show_directory(file_path))
     list_item = xbmcgui.ListItem(title, offscreen=True)
     list_item.setInfo("video", VideoInfoBuilder()
                       .with_field("plot", MetaDataField(metadata, "tv_data.summary"))
