@@ -1,11 +1,9 @@
 import datetime
-from dataclasses import dataclass
 
 
 # Data structures for the parsed media information
 
 
-@dataclass(init=False)
 class Image:
     data: bytes
     path: str
@@ -19,15 +17,22 @@ class Image:
         return str(self.__dict__)
 
 
-@dataclass
 class Credits:
     cast: list
     genre: list
     director: list
     writer: list
 
+    def __init__(self):
+        self.cast = []
+        self.genre = []
+        self.director = []
+        self.writer = []
 
-@dataclass(init=False)
+    def __repr__(self):
+        return str(self.__dict__)
+
+
 class TvData:
     season: int
     episode: int
@@ -48,7 +53,6 @@ class TvData:
         return str(self.__dict__)
 
 
-@dataclass(init=False)
 class Media:
     title: str
     title_2: str

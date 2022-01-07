@@ -5,7 +5,7 @@ from lib.DataStream import DataStream
 # Parses a credits group from the vsmeta file
 #   data_stream: the data stream for the backdrop group
 def parse(data_stream: DataStream) -> Media.Credits:
-    media_credits = Media.Credits([], [], [], [])
+    media_credits = Media.Credits()
 
     def add_cast(cast_member):
         media_credits.cast.append(cast_member)
