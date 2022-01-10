@@ -2,9 +2,14 @@ from lib import Media
 from lib.DataStream import DataStream
 
 
-# Parses a backdrop image group from the vsmeta file
-#   data_stream: the data stream for the backdrop group
 def parse(data_stream: DataStream) -> Media.Image:
+    """
+    Parses a backdrop image group from the given data stream.
+
+    :param data_stream: datastream containing the backdrop image group
+
+    :return: the parsed backdrop image group
+    """
     backdrop = Media.Image()
 
     def add_image():

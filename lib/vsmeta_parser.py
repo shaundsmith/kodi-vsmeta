@@ -4,11 +4,16 @@ from lib.DataStream import DataStream, DataStreamFactory
 DEFAULT_IMAGE_DIRECTORY = ".media-art"
 
 
-# Parses a Synology Videostation vsmeta file into a Python data structure.
-#   file_path: The path to the vsmeta file
-#   extract_images: Whether to extract images into separate files.
-#                   The extracted images are stored in .media-art/ adjacent to the vsmeta file
 def parse(file_path: str, extract_images: bool) -> Media:
+    """
+    Parses a Synology Videostation vsmeta file into a Media object.
+
+    :param file_path: the path to the vsmeta file
+    :param extract_images: whether to extract images into separate files. The extracted images are stored in the
+     `.media-art/` adjacent to the vsmeta file.
+
+    :return: the Media object representing the vsmeta file contents
+    """
     data_stream = DataStreamFactory().from_file(file_path)
 
     magic = data_stream.read_byte()

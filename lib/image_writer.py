@@ -6,12 +6,14 @@ POSTER_SUFFIX = "-poster.jpg"
 BACKDROP_SUFFIX = "-backdrop.jpg"
 
 
-# Writes all images parsed as byte arrays to the filesystem.
-# The images are written to the given directory.
-#   file_path: The path to the vsmeta file
-#   media: The parsed media information from the vsmeta file
-#   image_directory: The directory to write the images to
 def write_images(file_path: str, media: Media, image_directory: str):
+    """
+    Writes all images in the parsed Media object to the filesystem.
+
+    :param file_path: the path to the vsmeta file that was parsed
+    :param media: the parsed vsmeta file
+    :param image_directory: the directory to write the images to
+    """
     file_name = os.path.basename(file_path)
     directory = os.path.dirname(file_path)
 

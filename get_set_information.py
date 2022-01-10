@@ -16,11 +16,16 @@ class SetInformation:
     fanart: bytes
 
 
-# Returns set information for the given movie
-# Expects the set information to be in a .setinfo file adjacent to the scraped file
-#   file_path: The path of the file being scraped
-#   image_directory: The image directory to retrieve the set images from
 def get(file_path, image_directory):
+    """
+    Returns set information for the given movie. Expects the set information to be in a .setinfo file adjacent to the
+    scraped file.
+
+    :param file_path: the path of the file being scraped
+    :param image_directory: the image directory to retrieve the set images from
+
+    :return: the set information
+    """
     set_information = SetInformation()
 
     file_name = os.path.splitext(os.path.basename(file_path))[0]

@@ -2,9 +2,14 @@ from lib import Media, backdrop_parser
 from lib.DataStream import DataStream
 
 
-# Parses a tv data group from the vsmeta file
-#   data_stream: the data stream for the backdrop group
 def parse(data_stream: DataStream) -> Media.TvData:
+    """
+    Parses a TV data group from the given data stream.
+
+    :param data_stream: datastream containing the TV data group
+
+    :return: the parsed TV data group
+    """
     tv_show_data = Media.TvData()
 
     def add_season():
