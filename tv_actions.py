@@ -9,7 +9,7 @@ import MediaType
 from VideoInfoBuilder import VideoInfoBuilder, MetaDataField
 from lib import vsmeta_parser
 
-SEASON_DIRECTORY_PATTERN = re.compile("^Season \\d+.*")
+SEASON_DIRECTORY_PATTERN = re.compile("^(?:Season \\d+|Specials).*")
 
 
 def get_tv_show_directory(file_path):
